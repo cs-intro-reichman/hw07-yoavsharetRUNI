@@ -11,25 +11,65 @@ public class SpellChecker {
 	}
 
 	public static String tail(String str) {
-		// Your code goes here
+		return str.substring(1);
 	}
 
 	public static int levenshtein(String word1, String word2) {
-		// Your code goes here
+		if(word2.length() == 0){
+			return word1.length();
+		}
+
+		if(word1.length() == 0){
+			return word2.length();
+		}
+
+		if(word1.charAt(0) == word2.charAt(0)){
+			return levenshtein(tail(word1), tail(word2));
+		}
+
+		return 1 + min(levenshtein(tail(word1), word2), levenshtein(word1, tail(word2)), 
+					levenshtein(tail(word1), tail(word2)));
 	}
 
 	public static String[] readDictionary(String fileName) {
 		String[] dictionary = new String[3000];
-
 		In in = new In(fileName);
 
-		// Your code here
+		for(int i = 0; i < dictionary.length; i++){
+			dictionary[i] = in.readLine();
+		}
 
 		return dictionary;
 	}
 
 	public static String spellChecker(String word, int threshold, String[] dictionary) {
-		// Your code goes here
+		int minIdx = 0;
+		int minVal = levenshtein(word, dictionary[0]);
+		for(int i = 0; i < dictionary.length; i++){
+			int currentDistance = levenshtein(word, dictionary[i]);
+			if(currentDistance < minVal){
+				minIdx = i;
+				minVal = currentDistance;
+			}
+		}
+
+		if(minVal > threshold){
+			return word;
+		}
+		return dictionary[minIdx];
+		
+	}
+
+	/*** Helping functions ***/
+	private static int min(int a, int b){
+		if(a <= b){
+			return a;
+		}
+		return b;
+	}
+
+	private static int min(int a, int b, int c){
+		return min(min(a, b), c);
 	}
 
 }
