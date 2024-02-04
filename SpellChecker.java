@@ -15,22 +15,8 @@ public class SpellChecker {
 	}
 
 	public static int levenshtein(String word1, String word2) {
-		word1 = word1.toLowerCase();
-		word2 = word2.toLowerCase();
-		if(word2.length() == 0){
-			return word1.length();
-		}
-
-		if(word1.length() == 0){
-			return word2.length();
-		}
-
-		if(word1.charAt(0) == word2.charAt(0)){
-			return levenshtein(tail(word1), tail(word2));
-		}
-
-		return 1 + min(levenshtein(tail(word1), word2), levenshtein(word1, tail(word2)), 
-					levenshtein(tail(word1), tail(word2)));
+		return levenshteinHelper(word1.toLowerCase(), word2.toLowerCase());
+		
 	}
 
 	public static String[] readDictionary(String fileName) {
@@ -74,4 +60,21 @@ public class SpellChecker {
 		return min(min(a, b), c);
 	}
 
+	private static int levenshteinHelper(String word1, String word2){
+		if(word2.length() == 0){
+			return word1.length();
+		}
+
+		if(word1.length() == 0){
+			return word2.length();
+		}
+
+		if(word1.charAt(0) == word2.charAt(0)){
+			return levenshteinHelper(tail(word1), tail(word2));
+		}
+
+		return 1 + min(levenshteinHelper(tail(word1), word2), 
+		               levenshteinHelper(word1, tail(word2)), 
+					   levenshteinHelper(tail(word1), tail(word2)));
+	}
 }
